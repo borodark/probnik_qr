@@ -11,6 +11,9 @@ defmodule ProbnikQR do
   This prints an ASCII QR code to the terminal. Scan it with the
   Probnik Android app to establish a connection.
 
+  The underlying implementation is in the Erlang module `:probnik_qr`,
+  so Erlang and Elixir apps can share the same dependency.
+
   ## Requirements
 
   The node must be started with distribution enabled:
@@ -21,8 +24,6 @@ defmodule ProbnikQR do
 
       iex --name myapp@myhost.local --cookie secret -S mix
   """
-
-  @pair_tag :probnik_pair
 
   @doc """
   Print a QR code for pairing with Probnik.
@@ -38,63 +39,13 @@ defmodule ProbnikQR do
       :ok
   """
   def show do
-    node = node()
-
-    if node == :nonode@nohost do
-      IO.puts("Error: Node not started with distribution enabled.")
-      IO.puts("Start with: iex --sname myapp@localhost --cookie secret -S mix")
-      :error
-    else
-      cookie = Node.get_cookie()
-      mode = detect_name_mode(node)
-      term = {@pair_tag, node, cookie, [{:mode, mode}]}
-
-      payload =
-        :io_lib.format("~p", [term])
-        |> IO.iodata_to_binary()
-
-      qr =
-        payload
-        |> EQRCode.encode()
-        |> EQRCode.render()
-
-      IO.puts(qr)
-      IO.puts("\nNode: #{node}")
-      IO.puts("Mode: #{mode}")
-      :ok
-    end
+    :probnik_qr.show()
   end
 
   @doc """
-  Returns the pairing payload as a string (for custom QR generation).
+  Returns the pairing payload as a binary (for custom QR generation).
   """
   def payload do
-    node = node()
-    cookie = Node.get_cookie()
-    mode = detect_name_mode(node)
-    term = {@pair_tag, node, cookie, [{:mode, mode}]}
-
-    :io_lib.format("~p", [term])
-    |> IO.iodata_to_binary()
-  end
-
-  defp detect_name_mode(node) when is_atom(node) do
-    node
-    |> Atom.to_string()
-    |> detect_name_mode()
-  end
-
-  defp detect_name_mode(node) when is_binary(node) do
-    case String.split(node, "@") do
-      [_, host] ->
-        if String.contains?(host, ".") do
-          :longnames
-        else
-          :shortnames
-        end
-
-      _ ->
-        :shortnames
-    end
+    :probnik_qr.payload()
   end
 end

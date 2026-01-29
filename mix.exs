@@ -23,14 +23,18 @@ defmodule ProbnikQR.MixProject do
 
   defp deps do
     [
-      {:eqrcode, "~> 0.1.10"}
+      {:qrcode,
+       git: "https://github.com/komone/qrcode",
+       branch: "master",
+       compile: "erlc -o ebin src/*.erl",
+       app: false}
     ]
   end
 
   defp description do
     """
-    Generate QR codes for pairing with Probnik BEAM node monitor.
-    Add this to any Elixir/Erlang app to enable QR-based pairing.
+    Generate ASCII QR codes for pairing with Probnik BEAM node monitor.
+    Erlang core with an Elixir wrapper for dual-runtime use.
     """
   end
 
