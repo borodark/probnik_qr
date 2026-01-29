@@ -1,6 +1,6 @@
 defmodule ProbnikQR do
   @moduledoc """
-  Generate QR codes for pairing with Probnik BEAM node monitor.
+  Generate QR codes for pairing with the Probnik BEAM node monitor.
 
   ## Usage
 
@@ -8,11 +8,15 @@ defmodule ProbnikQR do
 
       iex> ProbnikQR.show()
 
-  This prints an ASCII QR code to the terminal. Scan it with the
-  Probnik Android app to establish a connection.
+  This prints an ANSI ASCII QR code to the terminal. Scan it with the
+  Probnik mobile app to establish a connection.
 
   The underlying implementation is in the Erlang module `:probnik_qr`,
   so Erlang and Elixir apps can share the same dependency.
+
+  ProbnikQR is deliberately small. It exists to be forgotten: a quick pairing
+  ritual that disappears into the muscle memory of starting a node, printing a
+  QR, scanning it, and moving on to observe the system.
 
   ## Requirements
 
