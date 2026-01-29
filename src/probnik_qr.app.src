@@ -1,0 +1,8 @@
+{application, probnik_qr,
+ [{description, "QR code pairing payloads for Probnik (Erlang + Elixir)"},
+  {vsn, "0.1.0"},
+  {registered, []},
+  {applications, [kernel, stdlib]},
+  {env, []},
+  {modules, []}
+ ]}.
