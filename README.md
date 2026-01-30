@@ -11,7 +11,7 @@ not even a feature you should remember. It is the small, frictionless ritual tha
 lets you pair a remote node in seconds, then immediately forget it is there.
 
 This library is here to be unseen. It should disappear into the dependency graph
-and into muscle memory: start a distributed node, print a QR, scan it, and step
+and into muscle memory: start a BEAM node, print a QR, scan it, and step
 out for a cigarette while the system tells you the truth. It is a motor skill,
 not a tutorial.
 
@@ -35,7 +35,7 @@ the best tooling is the kind you stop noticing once it works.
 
 ProbnikQR is a small part of the value chain:
 
-1) Start a distributed node.
+1) Start a BEAM node.
 2) Print the QR.
 3) Scan with the mobile app.
 4) Walk away, observe, think.
@@ -70,7 +70,7 @@ with a Mix or Rebar config. This is already set in `mix.exs`.
 
 ## Usage
 
-Start a distributed node and call `show/0`:
+Start a BEAM node and call `show/0`:
 
 ### Elixir
 
