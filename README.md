@@ -2,8 +2,9 @@
 
 Probnik is a promise: the BEAM node is alive, observable, and worth watching.
 It answers the old complaint that visibility is an afterthought, and it turns
-distributed runtime behavior into something you can actually hold in your
+BEAM node runtime behavior into something you can actually hold in your
 attention. That is the value proposition: see the system, not just the logs.
+
 
 ProbnikQR exists to make the on-ramp vanish. It is not a product, not a ceremony,
 not even a feature you should remember. It is the small, frictionless ritual that
@@ -63,7 +64,7 @@ with a Mix or Rebar config. This is already set in `mix.exs`.
 
 ```erlang
 {deps, [
-    {probnik_qr, {git, "YOUR_REPO_URL", {branch, "main"}}}
+    {probnik_qr, {git, "https://github.com/borodark/probnik_qr.git", {branch, "main"}}}
 ]}.
 ```
 
@@ -95,7 +96,7 @@ gesture, not a decision. That is the entire point of this library.
 
 ### Erlang example (e_ratelimiter)
 
-1) Start a distributed node:
+1) Start a BEAM node:
 
 ```
 cd ../e_ratelimiter
@@ -108,9 +109,13 @@ cd ../e_ratelimiter
 probnik_qr:show().
 ```
 
+
+![uno](./2.png)
+
+
 ### Elixir example (rate-limiter)
 
-1) Start a distributed node:
+1) Start a BEAM node:
 
 ```
 cd ../rate-limiter
@@ -122,3 +127,6 @@ iex --sname one@super-io --cookie secret_token -S mix phx.server
 ```
 ProbnikQR.show()
 ```
+
+
+![dos](./1.png)
