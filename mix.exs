@@ -9,9 +9,12 @@ defmodule ProbnikQR.MixProject do
       version: @version,
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
+      source_url: "https://github.com/borodark/probnik_qr",
+      homepage_url: "https://github.com/borodark/probnik_qr",
       deps: deps(),
       description: description(),
-      package: package()
+      package: package(),
+      docs: docs()
     ]
   end
 
@@ -27,7 +30,8 @@ defmodule ProbnikQR.MixProject do
        git: "https://github.com/komone/qrcode",
        branch: "master",
        compile: "erlc -o ebin src/*.erl",
-       app: false}
+       app: false},
+      {:ex_doc, "~> 0.34", only: :dev, runtime: false}
     ]
   end
 
@@ -42,6 +46,15 @@ defmodule ProbnikQR.MixProject do
     [
       licenses: ["MIT"],
       links: %{}
+    ]
+  end
+
+  defp docs do
+    [
+      main: "ProbnikQR",
+      extras: ["README.md", "CHANGELOG.md"],
+      source_ref: "v#{@version}",
+      source_url: "https://github.com/borodark/probnik_qr"
     ]
   end
 end

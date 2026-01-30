@@ -27,6 +27,18 @@ The QR encodes this Erlang term:
 {probnik_pair, 'myapp@localhost', secret, [{mode, shortnames}]}
 ```
 
+## Documentation (Hex.pm)
+
+This project is set up for ExDoc so Hex.pm can render the docs directly from
+the README and moduledoc:
+
+```
+mix deps.get
+mix docs
+```
+
+Changelog: `CHANGELOG.md`
+
 ## Why it exists
 
 Because pairing should not be a project. Because opening a remote shell on a
