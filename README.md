@@ -17,13 +17,14 @@ not a tutorial.
 
 ## What it does
 
-- Builds a pairing payload for Probnik from node name, cookie, and name mode.
+- Builds pairing payloads for both Probnik remote rendering (TCP) and distributed Erlang.
 - Renders an ANSI ASCII QR directly in your terminal.
 - Exposes a minimal API in both Erlang and Elixir.
 
-The QR encodes this Erlang term:
+The QR encodes one of these Erlang terms:
 
 ```
+{probnikoff_net, {{192, 168, 0, 249}, 4040}}
 {probnik_pair, 'myapp@localhost', secret, [{mode, shortnames}]}
 ```
 
@@ -47,7 +48,7 @@ the best tooling is the kind you stop noticing once it works.
 
 ProbnikQR is a small part of the value chain:
 
-1) Start a BEAM node.
+1) Start your app.
 2) Print the QR.
 3) Scan with the mobile app.
 4) Walk away, observe, think.
@@ -64,7 +65,7 @@ For now, the library pulls the QR encoder via a git dependency on
 ```elixir
 def deps do
   [
-    {:probnik_qr, path: "../probnik_qr"}
+      {:probnik_qr, git: "git@github.com:borodark/probnik_qr.git" , tag: "I"}
   ]
 end
 ```
@@ -82,20 +83,56 @@ with a Mix or Rebar config. This is already set in `mix.exs`.
 
 ## Usage
 
-Start a BEAM node and call `show/0`:
+Start your app and call `show/0`:
 
 ### Elixir
 
 ```
-iex --sname myapp@localhost --cookie secret -S mix
 iex> ProbnikQR.show()
 ```
 
 ### Erlang
 
 ```
-erl -sname myapp@localhost -setcookie secret
 1> probnik_qr:show().
+```
+
+For distributed Erlang pairing (old format), call `show_pair/0`:
+
+### Elixir
+
+```
+iex> ProbnikQR.show_pair()
+```
+
+### Erlang
+
+```
+1> probnik_qr:show_pair().
+```
+
+### Payload helpers
+
+If you want the raw payload (for custom QR rendering):
+
+### Elixir
+
+```
+iex> ProbnikQR.payload_net()
+{probnikoff_net, {{192, 168, 0, 249}, 4040}}
+
+iex> ProbnikQR.payload_pair()
+{probnik_pair, 'myapp@localhost', secret, [{mode, shortnames}]}
+```
+
+### Erlang
+
+```
+1> probnik_qr:payload_net().
+{probnikoff_net, {{192, 168, 0, 249}, 4040}}
+
+2> probnik_qr:payload_pair().
+{probnik_pair, 'myapp@localhost', secret, [{mode, shortnames}]}
 ```
 
 ## The ergonomics of it
@@ -108,7 +145,7 @@ gesture, not a decision. That is the entire point of this library.
 
 ### Erlang example (e_ratelimiter)
 
-1) Start a BEAM node:
+1) Start your app:
 
 ```
 cd ../e_ratelimiter
@@ -127,7 +164,7 @@ probnik_qr:show().
 
 ### Elixir example (rate-limiter)
 
-1) Start a BEAM node:
+1) Start your app:
 
 ```
 cd ../rate-limiter
@@ -142,3 +179,25 @@ ProbnikQR.show()
 
 
 ![dos](./1.png)
+
+## Net payload configuration
+
+By default, ProbnikQR encodes your first non-loopback IPv4 address and port 4040
+for `probnikoff_net`. Override with environment variables:
+
+```
+PROBNIKOFF_NET_HOST=192.168.0.249
+PROBNIKOFF_NET_PORT=4040
+```
+
+If `PROBNIKOFF_NET_HOST` is a hostname, the payload will be:
+
+```
+{probnikoff_net, {'scenic-server.local', 4040}}
+```
+
+## API shortcuts
+
+- `ProbnikQR.show()` / `probnik_qr:show()` defaults to `probnikoff_net`.
+- `ProbnikQR.show_net()` / `probnik_qr:show_net()` for TCP rendering.
+- `ProbnikQR.show_pair()` / `probnik_qr:show_pair()` for distributed Erlang.

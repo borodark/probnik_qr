@@ -20,19 +20,37 @@ defmodule ProbnikQR do
 
   ## Requirements
 
-  The node must be started with distribution enabled:
+  The default payload uses local IPv4 address and port 4040.
+  Override with environment variables for the net format:
 
-      iex --sname myapp@localhost --cookie secret -S mix
+      PROBNIKOFF_NET_HOST=192.168.0.249
+      PROBNIKOFF_NET_PORT=4040
 
-  Or for long names:
+  ## Payload helpers
 
-      iex --name myapp@myhost.local --cookie secret -S mix
+  If you want the raw payload (for custom QR rendering):
+
+      iex> ProbnikQR.payload_net()
+      {probnikoff_net, {{192, 168, 0, 249}, 4040}}
+
+      iex> ProbnikQR.payload_pair()
+      {probnik_pair, 'myapp@localhost', secret, [{mode, shortnames}]}
+
+      1> probnik_qr:payload_net().
+      {probnikoff_net, {{192, 168, 0, 249}, 4040}}
+
+      2> probnik_qr:payload_pair().
+      {probnik_pair, 'myapp@localhost', secret, [{mode, shortnames}]}
   """
 
   @doc """
   Print a QR code for pairing with Probnik.
 
-  The QR encodes an Erlang term with the node name, cookie, and name mode:
+  The QR encodes an Erlang term for remote rendering over TCP:
+
+      {probnikoff_net, {{192, 168, 0, 249}, 4040}}
+
+  For distributed Erlang pairing, use `show_pair/0` which encodes:
 
       {probnik_pair, 'myapp@localhost', secret, [{mode, shortnames}]}
 
@@ -47,9 +65,37 @@ defmodule ProbnikQR do
   end
 
   @doc """
+  Print a QR code for remote rendering over TCP (probnikoff_net).
+  """
+  def show_net do
+    :probnik_qr.show_net()
+  end
+
+  @doc """
+  Print a QR code for distributed Erlang pairing (probnik_pair).
+  """
+  def show_pair do
+    :probnik_qr.show_pair()
+  end
+
+  @doc """
   Returns the pairing payload as a binary (for custom QR generation).
   """
   def payload do
     :probnik_qr.payload()
+  end
+
+  @doc """
+  Returns the net payload as a binary (probnikoff_net).
+  """
+  def payload_net do
+    :probnik_qr.payload_net()
+  end
+
+  @doc """
+  Returns the distributed pairing payload as a binary (probnik_pair).
+  """
+  def payload_pair do
+    :probnik_qr.payload_pair()
   end
 end
