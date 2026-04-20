@@ -2,6 +2,7 @@
 
 %% API
 -export([show/0, payload/0, show_net/0, payload_net/0, show_pair/0, payload_pair/0]).
+-export([show_term/1, render_term/1, payload_term/1]).
 
 -define(PAIR_TAG, probnik_pair).
 
@@ -58,6 +59,34 @@ payload_pair() ->
     Cookie = erlang:get_cookie(),
     Mode = detect_name_mode(Node),
     Term = {?PAIR_TAG, Node, Cookie, [{mode, Mode}]},
+    iolist_to_binary(io_lib:format("~p", [Term])).
+
+%% Print an ANSI QR for an arbitrary Erlang term. Consumers (e.g. zed)
+%% that want to render their own pairing payloads call this instead of
+%% show_net/0 or show_pair/0.
+show_term(Term) ->
+    case render_term(Term) of
+        {ok, Ansi} ->
+            io:put_chars(Ansi),
+            ok;
+        {error, Reason} = E ->
+            io:format("Failed to render QR (~p).~n", [Reason]),
+            E
+    end.
+
+%% Return the ANSI-rendered QR for `Term` as an iodata/binary, without
+%% printing. Useful when the caller controls output (tests, LiveView
+%% embedding).
+render_term(Term) ->
+    case qr_encode(payload_term(Term)) of
+        {ok, QRCode} -> {ok, render_ansi(QRCode)};
+        {error, _} = E -> E
+    end.
+
+%% Serialise an arbitrary Erlang term to the same io_lib:format("~p", [Term])
+%% shape used by payload_pair/0, as a binary. Exposed so consumers can
+%% implement their own renderer over the same wire format.
+payload_term(Term) ->
     iolist_to_binary(io_lib:format("~p", [Term])).
 
 %% Internal

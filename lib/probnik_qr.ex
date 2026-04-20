@@ -98,4 +98,36 @@ defmodule ProbnikQR do
   def payload_pair do
     :probnik_qr.payload_pair()
   end
+
+  @doc """
+  Print an ANSI QR code encoding an arbitrary Erlang term.
+
+  Consumers like zed use this to render their own pairing payloads
+  without needing to add new tag-specific functions to this library.
+  The term is serialised with `io_lib:format("~p", [Term])` — same
+  wire format as `payload_pair/0`.
+
+  ## Example
+
+      iex> ProbnikQR.show_term({:zed_admin, node(), {192, 168, 0, 33}, 4040, "sha256:...", "ott_...", 0})
+      :ok
+  """
+  def show_term(term), do: :probnik_qr.show_term(term)
+
+  @doc """
+  Return the ANSI-rendered QR for `term` without printing it.
+
+  Returns `{:ok, iodata}` on success, `{:error, reason}` if the QR
+  encoder is unavailable or failed. Prefer this for tests, LiveView
+  embedding, or any caller controlling its own output.
+  """
+  def render_term(term), do: :probnik_qr.render_term(term)
+
+  @doc """
+  Serialise an arbitrary Erlang term to the same wire format used by
+  `payload_pair/0`. Useful for cross-language consumers (mobile apps
+  with Erlang-term regex parsers) that need the binary without the
+  QR rendering.
+  """
+  def payload_term(term), do: :probnik_qr.payload_term(term)
 end
